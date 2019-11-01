@@ -4,7 +4,7 @@ module.exports = [
     {
         name: "local",
         type: "mariadb",
-        host: "localhost",
+        host: "172.17.0.1",
         port: 3306,
         username: "example",
         password: "example",

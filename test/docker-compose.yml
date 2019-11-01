@@ -18,28 +18,15 @@ services:
     ports:
       - 8080:8080
 
-  zipkin:
-    image: openzipkin/zipkin-slim
-    container_name: zipkin
-    # Environment settings are defined here https://github.com/openzipkin/zipkin/blob/master/zipkin-server/README.md#environment-variables
+  jaeger:
+    image: jaegertracing/all-in-one
     environment:
-      - STORAGE_TYPE=mem
-      # Uncomment to enable self-tracing
-      # - SELF_TRACING_ENABLED=true
-      # Uncomment to enable debug logging
-      - JAVA_OPTS=-Dorg.slf4j.simpleLogger.log.zipkin2=debug
+      - COLLECTOR_ZIPKIN_HTTP_PORT=9411
     ports:
-      # Port used for the Zipkin UI and HTTP Api
+      - 5775:5775/udp
+      - 6831:6831/udp
+      - 6832:6832/udp
+      - 5778:5778
+      - 16686:16686
+      - 14268:14268
       - 9411:9411
-    depends_on:
-      - storage
-
-  # Fake services allow us to compose with docker-compose-elasticsearch.yml
-  # BusyBox is pinned to prevent repetitive image pulls for no-op services
-  storage:
-    image: busybox:1.31.0
-    container_name: fake_storage
-
-  dependencies:
-    image: busybox:1.31.0
-    container_name: fake_dependencies

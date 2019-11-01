@@ -1,16 +1,26 @@
-import { BatchRecorder } from "zipkin";
-import { HttpLogger } from "zipkin-transport-http";
-const ZipkinJavascriptOpentracing = require("zipkin-javascript-opentracing");
+import { initTracer } from 'jaeger-client';
 
-const recorder = new BatchRecorder({
-  logger: new HttpLogger({
-    endpoint: "http://localhost:9411/api/v1/spans"
-  })
-});
+const config = {
+  serviceName: 'apollo-typeorm-opentracing',
+  sampler: {
+    type: 'const',
+    param: 1,
+  },
+  reporter: {
+    logSpans: true,
+    collectorEndpoint: 'http://172.17.0.1:14268/api/traces',
+  },
+}
 
-// Setup the tracer to use http and implicit trace context
-export const tracer = new ZipkinJavascriptOpentracing({
-  serviceName: "TypeGraphQL TypeORM Sample",
-  recorder,
-  kind: "server"
-});
+const options = {
+  logger: {
+    info(msg: string) {
+      console.log('INFO ', msg)
+    },
+    error(msg: string) {
+      console.log('ERROR', msg)
+    },
+  },
+}
+
+export const tracer = initTracer(config, options)

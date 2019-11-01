@@ -5,3 +5,5 @@ typings/
 
 node_modules/
 lib/
+
+.devcontainer
